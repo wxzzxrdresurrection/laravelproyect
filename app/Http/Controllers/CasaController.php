@@ -54,5 +54,19 @@ class CasaController extends Controller
         ]);
     }
 
+    public function modificarCasa(Request $request){
+
+        //encontrar casa y cambair nombre
+        $casa = Casa::all();
+
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Casa actualizada de manera exitosa...",
+            "errors" => [],
+            "data" => $casa
+        ],200);
+    }
+
 
 }
