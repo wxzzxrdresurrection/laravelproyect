@@ -12,7 +12,23 @@ class AdafruitController extends Controller
         $response = Http::withHeaders([
             "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
         ])
-        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.infrarojo");
+        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.infrarojo/data");
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Datos obtenidos de manera exitosa",
+                "errors" => null,
+                "data" => $response->json()
+            ],200);
+        }
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener los datos",
+            "errors" => $response->json(),
+            "data" => null
+        ],400);
     }
 
     public function lluviaLectura(Request $request){
@@ -20,7 +36,23 @@ class AdafruitController extends Controller
         $response = Http::withHeaders([
             "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
         ])
-        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.agualluvia");
+        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.agualluvia/data");
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Datos obtenidos de manera exitosa",
+                "errors" => null,
+                "data" => $response->json()
+            ],200);
+        }
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener los datos",
+            "errors" => $response->json(),
+            "data" => null
+        ],400);
     }
 
     public function pesoLectura(Request $request){
@@ -28,7 +60,23 @@ class AdafruitController extends Controller
         $response = Http::withHeaders([
             "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
         ])
-        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.peso");
+        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.peso/data");
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Datos obtenidos de manera exitosa",
+                "errors" => null,
+                "data" => $response->json()
+            ],200);
+        }
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener los datos",
+            "errors" => $response->json(),
+            "data" => null
+        ],400);
 
     }
 
@@ -37,7 +85,23 @@ class AdafruitController extends Controller
         $response = Http::withHeaders([
             "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
         ])
-        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.luminosidad");
+        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.luminosidad/data");
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Datos obtenidos de manera exitosa",
+                "errors" => null,
+                "data" => $response->json()
+            ],200);
+        }
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener los datos",
+            "errors" => $response->json(),
+            "data" => null
+        ],400);
     }
 
     public function aguaLectura(Request $request){
@@ -45,7 +109,23 @@ class AdafruitController extends Controller
         $response = Http::withHeaders([
             "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
         ])
-        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.agua");
+        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.agua/data");
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Datos obtenidos de manera exitosa",
+                "errors" => null,
+                "data" => $response->json()
+            ],200);
+        }
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener los datos",
+            "errors" => $response->json(),
+            "data" => null
+        ],400);
     }
 
     public function temperaturaLectura(Request $request){
@@ -53,6 +133,22 @@ class AdafruitController extends Controller
         $response = Http::withHeaders([
             "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
         ])
-        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.temperatura");
+        ->get("https://io.adafruit.com/api/v2/isradios/feeds/casa.temperatura/data");
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Datos obtenidos de manera exitosa",
+                "errors" => null,
+                "data" => $response->json()
+            ],200);
+        }
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener los datos",
+            "errors" => $response->json(),
+            "data" => null
+        ],400);
     }
 }

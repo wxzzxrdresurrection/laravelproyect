@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
-use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
+
 
 class UserController extends Controller
 {

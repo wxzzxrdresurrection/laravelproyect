@@ -26,11 +26,15 @@ class CasaController extends Controller
         $validacion = Validator::make(
         $request->all(),
         [
-            "nombre" => "required|max:30"
+            "nombre" => "required|max:30|string",
+            "descripcion" => "max|string|"
         ],
         [
             "nombre.required" => "El campo :attribute es obligatorio",
-            "nombre.max" => "El campo :attribute debe contener máximo :max caracteres"
+            "nombre.max" => "El campo :attribute debe contener máximo :max caracteres",
+            "nombre.string" => "El campo :attribute debe ser un texto",
+            "descripcion.max" => "El campo :attribute debe contener máximo :max caracteres",
+            "descripcion.string" => "El campo :attribute debe ser un texto"
         ]);
 
         if($validacion->fails()){
@@ -59,6 +63,9 @@ class CasaController extends Controller
         //encontrar casa y cambair nombre
         $casa = Casa::all();
 
+        $casa->nombre = $request->nombre;
+        $casa->descripcion = $request->descripcion;
+        
 
         return response()->json([
             "status" => 200,

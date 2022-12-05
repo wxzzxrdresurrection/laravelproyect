@@ -23,6 +23,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('codigoSMS',6);
+            $table->enum('active',['0','1'])->default('0');
             $table->rememberToken();
             $table->timestamps();
             $table->foreignId("role_id")->references("id")->on("roles");
