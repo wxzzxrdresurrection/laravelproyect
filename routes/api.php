@@ -25,7 +25,10 @@ Route::post('nuevo/usuario',[UserController::class,'registrarUsuario']);
 Route::get('/correo/{id}',[tokenController::class,'verificarCorreo'])->name('verifymail')->middleware('signed');
 Route::get('/telefono/{id}',[tokenController::class,'verificarSMS'])->name('verifyphone')->middleware('signed');
 
-
+Route::prefix('/usuario')->group(function(){
+Route::get('/datos',[AdafruitController::class,'aguaLecturaUsuario']);
+Route::get('/grupo',[AdafruitController::class,'datosGrupo']);
+});
 
 Route::prefix('/casa')->group(function(){
     Route::post('/nueva',[CasaController::class,'nuevaCasa']);
@@ -41,3 +44,6 @@ Route::prefix('/sensor')->group(function(){
     Route::get('/agua',[AdafruitController::class,'aguaLectura']);
     Route::get('/iluminacion',[AdafruitController::class,'iluminacionLectura']);
 });
+
+//Route::post('/nuevo/feeds',[AdafruitController::class,'crearFeeds']);
+Route::post('/nuevo/grupo',[AdafruitController::class,'datosCasa']);
