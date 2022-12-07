@@ -21,9 +21,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('nuevo/usuario',[UserController::class,'registrarUsuario']);
-Route::get('/correo/{id}',[tokenController::class,'verificarCorreo'])->name('verifymail')->middleware('signed');
-Route::get('/telefono/{id}',[tokenController::class,'verificarSMS'])->name('verifyphone')->middleware('signed');
+Route::post('/nuevo/usuario',[UserController::class,'registrarUsuario']);
+Route::get('/correo/{id}',[UserController::class,'verificarCorreo'])->name('verifymail')->middleware('signed');
+Route::get('/telefono/{id}',[UserController::class,'verificarSMS'])->name('verifyphone')->middleware('signed');
+Route::post('/login',[UserController::class,'login2']);
 
 Route::prefix('/usuario')->group(function(){
 Route::get('/datos',[AdafruitController::class,'aguaLecturaUsuario']);

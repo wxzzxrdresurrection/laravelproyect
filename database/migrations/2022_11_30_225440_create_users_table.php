@@ -22,13 +22,15 @@ return new class extends Migration
             $table->string('correo',60)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('codigoSMS',4);
+            $table->string('codigoSMS',4)->nullable();
             $table->enum('mail_status',['0','1'])->default('0');
             $table->enum('active',['0','1'])->default('0');
+            $table->unsignedBigInteger("role_id")->default('2');
+            $table->unsignedBigInteger("casa_id")->nullable();
             $table->rememberToken();
             $table->timestamps();
-            $table->foreignId("role_id")->references("id")->on("roles");
-            $table->foreignId("casa_id")->references("id")->on("casas");
+            $table->foreign("role_id")->references("id")->on("roles");
+            $table->foreign("casa_id")->references("id")->on("casas");
         });
     }
 
