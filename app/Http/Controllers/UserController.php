@@ -78,7 +78,7 @@ class UserController extends Controller
 
             return response()->json([
                 "status" => 200,
-                "message" => "Usuario creado de manera exitosa",
+                "message" => "Recibirás un correo para verificar tu cuenta",
                 "errors" => null,
                 "data" => $user
             ],200);
@@ -94,51 +94,24 @@ class UserController extends Controller
     }
 
     public function verificarCorreo(Request $request){
+        
         if(!$request->hasValidSignature())
         abort(401);
         
         $user = User::find($request->id);
-        URL::temporarySignedRoute('verifyphone',now()->addMinutes(20),['id'=>$user->id]);
-
-        $randomcode = rand(100000,999999);
-        $user->codigoSMS = $randomcode;
+        $user->mail_status = 1;
         $user->save();
 
-        SMSVerificacion::dispatch()->delay(now()->addSeconds(15))->onQueue('sms')->onConnection('database');
-
-    }
-
-    public function enviarSMS(Request $request){
-
-        $code = rand(1000, 9999);
-
-        $user = User::find($request->id);
-        $user->code = $code;
-        $user->save();
-
-        $url = URL::temporarySignedRoute("verificarCodigo", now()->addMinutes(5), ["id" => $user->id]);
-
-        $response = Http::post('https://rest.nexmo.com/sms/json',[
-            'from'=>"Vonage APIs",
-            'text'=>"Codigo de verificacion: $code",
-            'to'=>"52$user->phone",
-            'api_key'=>"0ff442b0",
-            'api_secret'=>"QtZzZW5glUgmiXBv"
-        ]);
-
-        if($response->successful())
+        try
         {
-            return response()->json([
-                "status"=>200,
-                "url"=>$url
-            ],200);
+            return view("correos.confirmacion");
         }
 
-        else
+        catch(Exception $e)
         {
             return response()->json([
                 "status"=>400,
-                "message"=>"Error al enviar el codigo."
+                "message"=>"Error al verificar correo."
             ],400);
         }
     }
@@ -148,11 +121,11 @@ class UserController extends Controller
         $validacion = Validator::make(
             $request->all(),
             [
-                "code"=>"required|integer",
+                "codigo"=>"required|integer",
             ],
             [
-                "code.required"=>"El campo :attribute es obligatorio.",
-                "code.integer"=>"El campo :attribute tiene que ser un entero.",
+                "codigo.required"=>"El campo :attribute es obligatorio.",
+                "codigo.integer"=>"El campo :attribute tiene que ser un entero.",
             ]
         );
 
@@ -168,25 +141,28 @@ class UserController extends Controller
             );
         }
             $user = User::find($request->id);
+            $codigo = $user->codigoSMS;
 
-            $codigo = $user->code;
-
-            if($codigo == $request->code)
+            if($codigo == $request->codigo)
             {
-                $user->status = 1;
+                $user->active = 1;
                 $user->save();
 
                 return response()->json(
                     [
                         "status"=>200,
-                        "message"=>"Cuenta activada con exito!!!"
+                        "message"=>"Cuenta activada con exito!!!",
+                        "errors" => null,
+                        "data" => []
                     ],200
                 );
             
                 return response()->json(
                     [
                         "status"=>400,
-                        "message"=>"Error en la activacion de cuenta."
+                        "message"=>"Error en la activacion de cuenta...",
+                        "erorrs" => "El codigo no coincide",
+                        "data" => []
                     ],400
                 );
             
@@ -195,6 +171,52 @@ class UserController extends Controller
     }
 
     public function login(Request $request){
+        
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "correo"=>"required|email|max:60",
+                "password"=>"required|string|min:8"
+            ],
+            [
+                "correo.required"=>"El campo :attribute es obligatorio.",
+                "correo.email"=>"El campo :attribute debe ser un correo valido.",
+                "password.required"=>"El campo :attribute es obligatorio.",
+                "password.string"=>"El campo :attribute debe ser de tipo string.",
+                "password.min"=>"El campo :attribute debe tener minimo :min caracteres."
+            ]);
+
+        if($validacion->fails()){
+            return response()->json(
+                [
+                    "status"=>400,
+                    "message"=>"Error en la validacion...",
+                    "errors"=>$validacion->errors(),
+                    "data"=>[]
+                ],400
+            );
+        }
+
+        $user = User::where("correo",$request->correo)->where("active","1")->first();
+
+        if(!$user || Hash::check($request->password,$user->password)){
+            return response()->json([
+                    "status"=>400,
+                    "message"=>"No se pudo iniciar sesión",
+                    "errors"=>"El correo o la contraseña son incorrectos",
+                    "data"=>null
+                ],400
+            );
+        }
+
+        $token = $user->createToken("auth_token")->plainTextToken;
+
+        return response()->json([
+            "status"=>200,
+            "message"=>"Datos almacenados exitosamente",
+            "error"=>[],
+            "data"=> $token
+        ],200);
     }
 
     public function logout(Request $request){
@@ -211,7 +233,7 @@ class UserController extends Controller
 
     public function verificarCuenta(Request $request){
         $user = User::find($request->id);
-        $user->verified = 1;
+        $user->active = 1;
         $user->save();
 
         try
@@ -262,7 +284,5 @@ class UserController extends Controller
         }
     }
 
-    public function verificarCodigo(Request $request){
-    }
 
 }
