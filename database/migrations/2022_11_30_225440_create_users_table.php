@@ -25,10 +25,11 @@ return new class extends Migration
             $table->string('codigoSMS',4);
             $table->enum('mail_status',['0','1'])->default('0');
             $table->enum('active',['0','1'])->default('0');
+            $table->unsignedBigInteger('role_id');
             $table->rememberToken();
             $table->timestamps();
-            $table->foreignId("role_id")->references("id")->on("roles");
-            $table->foreignId("casa_id")->references("id")->on("casas");
+
+            $table->foreign('role_id')->references('roles')->on('id');
         });
     }
 

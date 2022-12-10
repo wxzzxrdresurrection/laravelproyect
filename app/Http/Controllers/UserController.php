@@ -114,6 +114,7 @@ class UserController extends Controller
                 "message"=>"Error al verificar correo."
             ],400);
         }
+
     }
 
     public function verificarSMS(Request $request){
@@ -232,22 +233,29 @@ class UserController extends Controller
     }
 
     public function verificarCuenta(Request $request){
+
         $user = User::find($request->id);
-        $user->active = 1;
-        $user->save();
-
-        try
-        {
-            return view("correos.confirmacion");
+       
+        if($user->active = 1){
+            return response()->json(
+                [
+                    "status"=>200,
+                    "message"=>"Correo verificado",
+                    "errors" => null,
+                    "data" => []
+                ],200
+            );
         }
 
-        catch(Exception $e)
-        {
-            return response()->json([
+        return response()->json(
+            [
                 "status"=>400,
-                "message"=>"Error al verificar correo."
-            ],400);
-        }
+                "message"=>"Error correo verificado",
+                "errors" => null,
+                "data" => []
+            ],400
+        );
+
     }
     
     public function enviarCodigoTwilio(Request $request){
@@ -284,5 +292,17 @@ class UserController extends Controller
         }
     }
 
+    public function misCasas(Request $request){
+        
+        $user = User::find($request->user()->id);
+        $casas = $user->casas();
+
+        return response()->json([
+            "status"=>200,
+            "message"=>"Casas del usuario",
+            "errors"=>null,
+            "data"=>$casas
+        ],200);
+    }
 
 }
