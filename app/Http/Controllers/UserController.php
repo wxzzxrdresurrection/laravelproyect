@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Jobs\CorreoVerificacion;
 use App\Jobs\EnviarCorreoActivacionQueue;
 use App\Jobs\SMSVerificacion;
+use App\Mail\VerificacionMailer;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,9 +21,9 @@ class UserController extends Controller
 
     public function registrarUsuario(Request $request){
 
-        $validacion = Validator::make([
+        $validacion = Validator::make(
             $request->all()
-        ],
+        ,
         [
             "nombre" => "required|string|max:40",
             "ap_paterno" => "required|string|max:40",
@@ -57,9 +59,9 @@ class UserController extends Controller
             return response()->json([
                 "status" => 400,
                 "message" => "Ocurrió un error en las validaciones",
-                "errors" => $validacion->failed(),
+                "errors" => $validacion->errors(),
                 "data" => null
-            ],200);
+            ],400);
         }
 
         $user = User::create([
@@ -72,13 +74,9 @@ class UserController extends Controller
         ]);
 
         if($user->save()){
-
-            $url = URL::temporarySignedRoute('verifymail',now()->addMinutes(20),['id'=>$user->id]);
-            CorreoVerificacion::dispatch($user,$url)->delay(now()->addSeconds(20))->onQueue('email')->onConnection('database');
-
             return response()->json([
                 "status" => 200,
-                "message" => "Recibirás un correo para verificar tu cuenta",
+                "message" => "Usuario creado correctamente",
                 "errors" => null,
                 "data" => $user
             ],200);
@@ -93,7 +91,7 @@ class UserController extends Controller
 
     }
 
-    public function verificarCorreo(Request $request){
+    public function activarCorreo(Request $request){
         
         if(!$request->hasValidSignature())
         abort(401);
@@ -115,6 +113,46 @@ class UserController extends Controller
             ],400);
         }
 
+    }
+
+    public function verificarCorreoActivo(Request $request){
+
+        $user = User::find($request->id);
+
+        if($user->mail_status == 1){
+            return response()->json([
+                "status"=>200,
+                "message"=>"Correo verificado.",
+                "errors"=>null,
+                "data"=>$user
+            ],200);
+        }
+
+
+        return response()->json([
+            "status"=>400,
+            "message"=>"Correo no verificado.",
+            "errors"=>null,
+            "data"=>null
+        ],400);
+    }
+
+    public function enviarSMS(Request $request){
+        $code = rand(1000, 9999);
+
+        $user = User::find($request->id);
+        $user->code = $code;
+        $user->save();
+
+        $url = URL::temporarySignedRoute("verifyphone", now()->addMinutes(5), ["id" => $user->id]);
+        SMSVerificacion::dispatch($user->telefono,$url,$code)->delay(now()->addSeconds(15))->onQueue("sms")->onConnection("database");
+
+        return response()->json([
+            "status"=>200,
+            "message"=>"SMS enviado.",
+            "errors"=>null,
+            "data"=>null
+        ],200);
     }
 
     public function verificarSMS(Request $request){
@@ -142,9 +180,8 @@ class UserController extends Controller
             );
         }
             $user = User::find($request->id);
-            $codigo = $user->codigoSMS;
 
-            if($codigo == $request->codigo)
+            if($user->codigoSMS == $request->codigo)
             {
                 $user->active = 1;
                 $user->save();
@@ -154,9 +191,10 @@ class UserController extends Controller
                         "status"=>200,
                         "message"=>"Cuenta activada con exito!!!",
                         "errors" => null,
-                        "data" => []
+                        "data" => $user
                     ],200
                 );
+            }
             
                 return response()->json(
                     [
@@ -167,8 +205,40 @@ class UserController extends Controller
                     ],400
                 );
             
+    }
+
+    public function enviarCodigoTwilio(Request $request){
+        $code = rand(1000, 9999);
+
+        $user = User::find($request->id);
+        $user->code = $code;
+        $user->save();
+
+        $url = URL::temporarySignedRoute("verifyphone", now()->addMinutes(5), ["id" => $user->id]);
+
+        $response = Http::withBasicAuth("AC72c2b73b180fbacd7a36840d0eeffd10", "84a30b9ed205758fc34512c2b655dd71")-> asForm()
+        -> post('https://api.twilio.com/2010-04-01/Accounts/AC72c2b73b180fbacd7a36840d0eeffd10/Messages.json', 
+        [
+            "To" => "whatsapp:+521$user->phone",
+            "From" => "whatsapp:+14155238886",
+            "Body" => "Codigo de verificacion: $code"
+        ]);
+
+        if($response->successful())
+        {
+            return response()->json([
+                "status"=>200,
+                "url"=>$url
+            ],200);
         }
 
+        else
+        {
+            return response()->json([
+                "status"=>400,
+                "message"=>"Error enviar el codigo."
+            ],400);
+        }
     }
 
     public function login(Request $request){
@@ -200,7 +270,7 @@ class UserController extends Controller
 
         $user = User::where("correo",$request->correo)->where("active","1")->first();
 
-        if(!$user || Hash::check($request->password,$user->password)){
+        if(!$user || !Hash::check($request->password,$user->password)){
             return response()->json([
                     "status"=>400,
                     "message"=>"No se pudo iniciar sesión",
@@ -214,8 +284,8 @@ class UserController extends Controller
 
         return response()->json([
             "status"=>200,
-            "message"=>"Datos almacenados exitosamente",
-            "error"=>[],
+            "message"=>"Se ha iniciado sesion correctamente",
+            "errors"=>[],
             "data"=> $token
         ],200);
     }
@@ -258,51 +328,68 @@ class UserController extends Controller
 
     }
     
-    public function enviarCodigoTwilio(Request $request){
-        $code = rand(1000, 9999);
+    public function login2(Request $request){
 
-        $user = User::find($request->id);
-        $user->code = $code;
-        $user->save();
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "correo"=>"required|email|max:60",
+                "password"=>"required|string|min:8"
+            ],
+            [
+                "correo.required"=>"El campo :attribute es obligatorio.",
+                "correo.email"=>"El campo :attribute debe ser un correo valido.",
+                "password.required"=>"El campo :attribute es obligatorio.",
+                "password.string"=>"El campo :attribute debe ser de tipo string.",
+                "password.min"=>"El campo :attribute debe tener minimo :min caracteres."
+            ]);
 
-        $url = URL::temporarySignedRoute("verificarCodigo", now()->addMinutes(5), ["id" => $user->id]);
-
-        $response = Http::withBasicAuth("AC72c2b73b180fbacd7a36840d0eeffd10", "84a30b9ed205758fc34512c2b655dd71")-> asForm()
-        -> post('https://api.twilio.com/2010-04-01/Accounts/AC72c2b73b180fbacd7a36840d0eeffd10/Messages.json', 
-        [
-            "To" => "whatsapp:+521$user->phone",
-            "From" => "whatsapp:+14155238886",
-            "Body" => "Codigo de verificacion: $code"
-        ]);
-
-        if($response->successful())
-        {
-            return response()->json([
-                "status"=>200,
-                "url"=>$url
-            ],200);
+        if($validacion->fails()){
+            return response()->json(
+                [
+                    "status"=>400,
+                    "message"=>"Error en la validacion...",
+                    "errors"=>$validacion->errors(),
+                    "data"=>[]
+                ],400
+            );
         }
 
-        else
-        {
+        $user = User::where("correo",$request->correo)->first();
+
+        if(!$user || !Hash::check($request->password,$user->password)){
             return response()->json([
-                "status"=>400,
-                "message"=>"Error enviar el codigo."
+                    "status"=>400,
+                    "message"=>"No se pudo iniciar sesión",
+                    "errors"=>"El correo o la contraseña son incorrectos",
+                    "data"=>null
+                ],400
+            );
+        }
+
+        if($user->active == 0){
+
+            $url = URL::temporarySignedRoute('verifymail',now()->addMinutes(20),['id'=>$user->id]);
+            //CorreoVerificacion::dispatch($user,$url)->delay(now()->addSeconds(20))->onQueue('email')->onConnection('database');
+            Mail::to($user->correo)->send(new VerificacionMailer($user, $url));
+
+            return response()->json([
+                "status"=>401,
+                "message"=>"No se pudo iniciar sesión",
+                "errors"=>"El correo no ha sido verificado",
+                "data"=>[$user]
             ],400);
         }
-    }
 
-    public function misCasas(Request $request){
-        
-        $user = User::find($request->user()->id);
-        $casas = $user->casas();
+        $token = $user->createToken("auth_token")->plainTextToken;
 
         return response()->json([
             "status"=>200,
-            "message"=>"Casas del usuario",
-            "errors"=>null,
-            "data"=>$casas
+            "message"=>"Se ha iniciado sesion correctamente",
+            "errors"=>[],
+            "data"=> $token
         ],200);
-    }
+    }    
+
 
 }

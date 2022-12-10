@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('correo',60)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('codigoSMS',4);
+            $table->string('codigoSMS',4)->nullable();
             $table->enum('mail_status',['0','1'])->default('0');
             $table->enum('active',['0','1'])->default('0');
             $table->unsignedBigInteger('role_id');
