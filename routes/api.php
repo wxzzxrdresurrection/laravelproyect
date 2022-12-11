@@ -24,11 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::prefix('/inicio')->group(function(){
     Route::post('/nuevo/usuario',[UserController::class,'registrarUsuario']);
-    Route::get('/correo/{id}',[UserController::class,'verifymail'])->name('verifymail')->middleware('signed');
-    Route::get('verificar/correo/{id}',[UserController::class,'verificarCorreoActivo']);
-    Route::get('/enviar/sms/{id}',[UserController::class,'enviarSMS']);
-    Route::get('/enviar/sms/twilio/{id}',[UserController::class,'enviarCodigoTwilio']);
-    Route::post('/telefono/{id}',[UserController::class,'verificarSMS'])->name('verifyphone')->middleware('signed');
+    Route::get('/correo/{id}',[UserController::class,'verifymail'])->name('verifymail')->middleware('signed')->where('id', '[0-9]+');
+    Route::get('verificar/correo/{id}',[UserController::class,'verificarCorreoActivo'])->where('id', '[0-9]+');
+    Route::get('/enviar/sms/{id}',[UserController::class,'enviarSMS'])->where('id', '[0-9]+');
+    Route::get('/enviar/sms/twilio/{id}',[UserController::class,'enviarCodigoTwilio'])->where('id', '[0-9]+');
+    Route::post('/telefono/{id}',[UserController::class,'verificarSMS'])->name('verifyphone')->middleware('signed')->where('id', '[0-9]+');
     Route::post('/login',[UserController::class,'login']);
 });
 
@@ -39,16 +39,24 @@ Route::prefix('/usuario')->group(function(){
 
 Route::prefix('/casa')->middleware(['auth:sanctum','active','roles:1'])->group(function(){
     Route::post('/nueva',[AdminController::class,'createCasa']);
-    Route::post('/modificar/{id}',[AdminController::class,'modificarCasa']);
-    Route::post('/eliminar/{id}',[AdminController::class,'eliminarCasa']);
-    Route::post('feeds/',[AdminController::class, 'crearFeeds']);
+    Route::post('/modificar/{id}',[AdminController::class,'modificarCasa'])->where('id', '[0-9]+');
+    Route::post('/eliminar/{id}',[AdminController::class,'eliminarCasa'])->where('id', '[0-9]+');
+    Route::post('/feeds',[AdminController::class, 'crearFeeds']);
     Route::post('/asignar',[AdminController::class,'asignarCasa']);
-    Route::get('/usuario/{id}',[AdminController::class,'casasDeCadaUsuario']);
+    Route::get('/usuario/{id}',[AdminController::class,'casasDeCadaUsuario'])->where('id', '[0-9]+');
 });
 
 Route::prefix('/user')->middleware(['auth:sanctum','active','roles:1'])->group( function(){
     Route::get('/casas',[CasaController::class,'misCasas']);
-    Route::get('/sensores',[CasaController::class,'infoCasa']);
+    //Route::get('/sensores',[CasaController::class,'infoCasa']);
+    Route::prefix('/sensor')->group(function(){
+        Route::get('/comida',[CasaController::class,'comidaLectura']);
+        Route::get('/agua',[CasaController::class,'aguaLectura']);
+        Route::get('/peso',[CasaController::class,'pesoLectura']);
+        Route::get('/lluvia',[CasaController::class,'lluviaLectura']);
+        Route::get('/temperatura',[CasaController::class,'temperaturaLectura']);
+        Route::get('/iluminacion',[CasaController::class,'iluminacionLectura']);
+    });
 
 });
 
@@ -62,4 +70,4 @@ Route::prefix('/sensor')->group(function(){
 });
 
 //Route::post('/nuevo/feeds',[AdafruitController::class,'crearFeeds']);
-Route::post('/nuevo/grupo',[AdafruitController::class,'datosCasa']);
+//Route::post('/nuevo/grupo',[AdafruitController::class,'datosCasa']);

@@ -86,7 +86,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.agua/details');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.agua/data/last');
 
         if($response->successful()){
             return response()->json([
@@ -111,7 +111,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.peso/data');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.peso/data/last');
 
         if($response->successful()){
             return response()->json([
@@ -136,7 +136,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.comida/data');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.comida/data/last');
 
         if($response->successful()){
             return response()->json([
@@ -161,7 +161,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.lluvia/data');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.lluvia/data/last');
 
         if($response->successful()){
             return response()->json([
@@ -187,7 +187,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.luminosidad/data');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.luminosidad/data/last');
 
         if($response->successful()){
             return response()->json([
@@ -213,7 +213,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.temperatura/data');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.temperatura/data/last');
 
         if($response->successful()){
             return response()->json([
