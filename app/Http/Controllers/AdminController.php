@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContraseñaMailer;
 use App\Models\Casa;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
@@ -41,12 +45,67 @@ class AdminController extends Controller
             "descripcion" => $request->descripcion,
         ]);
 
+        $response = Http::withHeaders([
+            "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+        ])
+        ->post("https://io.adafruit.com/api/v2/isradios/groups",[
+            "name" => $request->nombre
+        ]);
+
+        if($response->successful()){
+
+            $feeds = array("agua","luminosidad","peso","temperatura","lluvia","comida");
+            for ($i=0; $i <= 5; $i++) { 
+                
+            $response2 = Http::withHeaders([
+                "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+            ])
+            ->post("https://io.adafruit.com/api/v2/isradios/groups/$casa->nombre/feeds",[
+                "name" => $feeds[$i]
+            ]);
+            }
+
+            if($response2->successful()){
+
+                $response3 = Http::withHeaders([
+                    "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+                ])
+                ->get("https://io.adafruit.com/api/v2/isradios/groups/$request->nombre");
+
+                return response()->json([
+                    "status" => 200,
+                    "message" => "Feed creado de manera exitosa",
+                    "errors" => null,
+                    "data" => $response3->json()
+                ],200);
+            }
+        }
+
         return response()->json([
-            "status" => 200,
-            "message" => "Casa creada de manera exitosa",
+            "status" => 400,
+            "message" => "No se pudo crear la casa",
             "errors" => null,
-            "data" => [$casa]
-        ],200);
+            "data" => [$response2->json()]
+        ],400);
+    }
+
+    public function crearFeeds(Request $request){
+
+        $feeds = array("agua","luminosidad","peso","temperatura","lluvia","comida");
+        for ($i=0; $i <= 5; $i++) { 
+            
+        $response2 = Http::withHeaders([
+            "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+        ])
+        ->post("https://io.adafruit.com/api/v2/isradios/groups/$request->nombre/feeds",[
+            "name" => $feeds[$i]
+        ]);
+        }
+
+        return response()->json([
+            "data" => [$response2->json()]
+        ]);
+
     }
 
     public function asignarCasa(Request $request){
@@ -167,9 +226,9 @@ class AdminController extends Controller
 
         return response()->json([
             "status" => 200,
-            "message" => "Casas encontradas de manera exitosa",
+            "message" => "Casas encontradas de manera exitosa : " .count($casas) ." registros",
             "errors" => null,
-            "data" => [$casas]
+            "data" => $casas
         ],200);
 
     }
@@ -188,7 +247,7 @@ class AdminController extends Controller
             ],400);
         }
 
-        $user->active = 0;
+        $user->active = '0';
         $user->save();
 
             return response()->json([
@@ -213,7 +272,7 @@ class AdminController extends Controller
             ],400);
         }
 
-        $user->active= 1;
+        $user->active = '1';
         $user->save();
 
             return response()->json([
@@ -307,6 +366,39 @@ class AdminController extends Controller
                 ],400);
             }
 
+        $user = User::find($id);
+
+        if(!$user){
+            return response()->json([
+                "status" => 400,
+                "message" => "Error al encontrar al usuario",
+                "errors" => "El usuario no existe",
+                "data" => null
+            ],400);
+        }
+
+        if(!Hash::check($request->password,$user->password)){
+            return response()->json([
+                "status" => 400,
+                "message" => "Error al encontrar al usuario",
+                "errors" => "La contraseña no coincide",
+                "data" => null
+            ],400);
+        }
+
+        $user->password = Hash::make($request->password_confirmation);
+        $user->save();
+
+        Mail::to($user->correo)->send(new ContraseñaMailer($request->password_confirmation));
+
+        return response()->json([
+            "status" => 200,
+            "message" => "Contraseña actualizada de manera exitosa",
+            "errors" => null,
+            "data" => [$user]
+        ],200);
+
+        
             
     }
 

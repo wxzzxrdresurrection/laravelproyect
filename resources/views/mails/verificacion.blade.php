@@ -20,9 +20,7 @@
         </div>
 
         <div>
-            <button class="btn" href="{{$url}}">
-                Verificar Cuenta
-            </button>
+            <a href="{{$url}}"><button>Verificar</button></a>
         </div>
     </div>
 

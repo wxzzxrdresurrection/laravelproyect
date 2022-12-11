@@ -15,6 +15,6 @@ class Casa extends Model
 
     public function users(){
 
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class,'casas_users')->using(CasaUser::class);
     }
 }

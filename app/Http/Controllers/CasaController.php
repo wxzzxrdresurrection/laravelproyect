@@ -5,20 +5,25 @@ namespace App\Http\Controllers;
 use App\Models\Casa;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
 class CasaController extends Controller
 {
-    public function casasDeUsuario(){
 
-        $results = Casa::join("users","casas.id","=","users.casa_id")->select("users.id","users.nombre","casas.nombre")->get();
+    public function misCasas(Request $request){
+
+        $user = User::find($request->user()->id);
+
+        $casas = $user->casas;
 
         return response()->json([
             "status" => 200,
-            "message" => "",
+            "message" => "Casas encontradas de manera exitosa",
             "errors" => [],
-            "data" => $results
-        ],200);
+            "data" => $casas
+        ]);
+
     }
 
     public function nuevaCasa(Request $request){
@@ -75,5 +80,32 @@ class CasaController extends Controller
         ],200);
     }
 
+    public function infoCasa(Request $request){
+
+        $casa = Casa::find($request->id);
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.agua/details');
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Información de la casa encontrada de manera exitosa",
+                "errors" => [],
+                "data" => $response->json()
+            ],200);
+        }       
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener la información de la casa",
+            "errors" => [$response->json()],
+            "data" => $casa
+        ],400);
+
+    }
+
+    
 
 }

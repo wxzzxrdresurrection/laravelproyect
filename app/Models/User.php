@@ -46,7 +46,7 @@ class User extends Authenticatable
     ];
 
     public function casas(){
-        return $this->belongsToMany(User::class,'casas_users');
+        return $this->belongsToMany(Casa::class,'casas_users');
     }
 
     public function roles(){

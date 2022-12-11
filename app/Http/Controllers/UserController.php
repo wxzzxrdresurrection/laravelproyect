@@ -74,6 +74,10 @@ class UserController extends Controller
         ]);
 
         if($user->save()){
+
+            $url = URL::temporarySignedRoute("verifymail", now()->addMinutes(30),["id"=>$user->id]);
+            CorreoVerificacion::dispatch($user,$url)->delay(now()->addSeconds(15))->onQueue('email')->onConnection('database');
+
             return response()->json([
                 "status" => 200,
                 "message" => "Usuario creado correctamente",
@@ -91,18 +95,26 @@ class UserController extends Controller
 
     }
 
-    public function activarCorreo(Request $request){
+    public function verifymail(Request $request){
         
         if(!$request->hasValidSignature())
         abort(401);
         
-        $user = User::find($request->id);
-        $user->mail_status = 1;
-        $user->save();
+
+            $user = User::find($request->id);
+            $user->mail_status = '1';
+            $user->save();
 
         try
         {
-            return view("correos.confirmacion");
+            
+            //return view("mails.confirmacion");
+
+            return response()->json([
+                "status"=>200,
+                "message"=>"Error al verificar correo.",
+                "data" => $user
+            ],400);
         }
 
         catch(Exception $e)
@@ -141,11 +153,11 @@ class UserController extends Controller
         $code = rand(1000, 9999);
 
         $user = User::find($request->id);
-        $user->code = $code;
+        $user->codigoSMS = $code;
         $user->save();
 
         $url = URL::temporarySignedRoute("verifyphone", now()->addMinutes(5), ["id" => $user->id]);
-        SMSVerificacion::dispatch($user->telefono,$url,$code)->delay(now()->addSeconds(15))->onQueue("sms")->onConnection("database");
+        SMSVerificacion::dispatch($user,$url,$code)->delay(now()->addSeconds(15))->onQueue("sms")->onConnection("database");
 
         return response()->json([
             "status"=>200,
@@ -157,6 +169,9 @@ class UserController extends Controller
 
     public function verificarSMS(Request $request){
        
+        if(!$request->hasValidSignature())
+        abort(401);
+
         $validacion = Validator::make(
             $request->all(),
             [
@@ -183,7 +198,7 @@ class UserController extends Controller
 
             if($user->codigoSMS == $request->codigo)
             {
-                $user->active = 1;
+                $user->active = '1';
                 $user->save();
 
                 return response()->json(
@@ -211,24 +226,24 @@ class UserController extends Controller
         $code = rand(1000, 9999);
 
         $user = User::find($request->id);
-        $user->code = $code;
+        $user->codigoSMS = $code;
         $user->save();
 
         $url = URL::temporarySignedRoute("verifyphone", now()->addMinutes(5), ["id" => $user->id]);
 
-        $response = Http::withBasicAuth("AC72c2b73b180fbacd7a36840d0eeffd10", "84a30b9ed205758fc34512c2b655dd71")-> asForm()
-        -> post('https://api.twilio.com/2010-04-01/Accounts/AC72c2b73b180fbacd7a36840d0eeffd10/Messages.json', 
-        [
-            "To" => "whatsapp:+521$user->phone",
+        $response = Http::withBasicAuth('AC11f5b89a20d3ac2806893a2c85e1a71f', 'd6942782d0f9341a095298f70d7aedf0')
+        ->asForm()->post('https://api.twilio.com/2010-04-01/Accounts/AC11f5b89a20d3ac2806893a2c85e1a71f/Messages.json',[
+            "To" => "whatsapp:+521".$user->telefono,
             "From" => "whatsapp:+14155238886",
-            "Body" => "Codigo de verificacion: $code"
+            "Body" => "Tu código de verificación es: ".$code
         ]);
 
         if($response->successful())
         {
             return response()->json([
                 "status"=>200,
-                "url"=>$url
+                "url"=>$url,
+                "data" => $response->json()
             ],200);
         }
 
