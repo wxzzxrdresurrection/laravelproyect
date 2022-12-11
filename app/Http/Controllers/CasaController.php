@@ -80,7 +80,7 @@ class CasaController extends Controller
         ],200);
     }
 
-    public function infoCasa(Request $request){
+    public function aguaLectura(Request $request){
 
         $casa = Casa::find($request->id);
 
@@ -106,6 +106,132 @@ class CasaController extends Controller
 
     }
 
-    
+    public function pesoLectura(Request $request){        
+        $casa = Casa::find($request->id);
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.peso/data');
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Información de la casa encontrada de manera exitosa",
+                "errors" => [],
+                "data" => $response->json()
+            ],200);
+        }       
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener la información de la casa",
+            "errors" => [$response->json()],
+            "data" => $casa
+        ],400);
+
+    }
+
+    public function comidaLectura(Request $request){
+        $casa = Casa::find($request->id);
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.comida/data');
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Información de la casa encontrada de manera exitosa",
+                "errors" => [],
+                "data" => $response->json()
+            ],200);
+        }       
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener la información de la casa",
+            "errors" => [$response->json()],
+            "data" => $casa
+        ],400);
+
+    }
+
+    public function lluviaLectura(Request $request){
+        $casa = Casa::find($request->id);
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.lluvia/data');
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Información de la casa encontrada de manera exitosa",
+                "errors" => [],
+                "data" => $response->json()
+            ],200);
+        }       
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener la información de la casa",
+            "errors" => [$response->json()],
+            "data" => $casa
+        ],400);
+
+    }
+
+    public function iluminacionLectura(Request $request){
+     
+        $casa = Casa::find($request->id);
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.luminosidad/data');
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Información de la casa encontrada de manera exitosa",
+                "errors" => [],
+                "data" => $response->json()
+            ],200);
+        }       
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener la información de la casa",
+            "errors" => [$response->json()],
+            "data" => $casa
+        ],400);
+
+    }
+
+    public function temperaturaLectura(Request $request){
+
+        $casa = Casa::find($request->id);
+
+        $response = Http::withHeaders([
+            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.temperatura/data');
+
+        if($response->successful()){
+            return response()->json([
+                "status" => 200,
+                "message" => "Información de la casa encontrada de manera exitosa",
+                "errors" => [],
+                "data" => $response->json()
+            ],200);
+        }       
+
+        return response()->json([
+            "status" => 400,
+            "message" => "Ocurrió un error al obtener la información de la casa",
+            "errors" => [$response->json()],
+            "data" => $casa
+        ],400);
+
+    }
+
 
 }
