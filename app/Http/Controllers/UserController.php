@@ -82,7 +82,7 @@ class UserController extends Controller
                 "status" => 200,
                 "message" => "Usuario creado correctamente",
                 "errors" => null,
-                "data" => $user
+                "data" => [$user]
             ],200);
         }
 
@@ -136,7 +136,7 @@ class UserController extends Controller
                 "status"=>200,
                 "message"=>"Correo verificado.",
                 "errors"=>null,
-                "data"=>$user
+                "data"=>[$user]
             ],200);
         }
 
@@ -206,7 +206,7 @@ class UserController extends Controller
                         "status"=>200,
                         "message"=>"Cuenta activada con exito!!!",
                         "errors" => null,
-                        "data" => $user
+                        "data" =>[$user]
                     ],200
                 );
             }
@@ -242,8 +242,10 @@ class UserController extends Controller
         {
             return response()->json([
                 "status"=>200,
-                "url"=>$url,
-                "data" => $response->json()
+                "message"=>"Codigo enviado",
+                "errors"=>null,
+                "data" => [$user],
+                "url"=> $url
             ],200);
         }
 
@@ -301,7 +303,8 @@ class UserController extends Controller
             "status"=>200,
             "message"=>"Se ha iniciado sesion correctamente",
             "errors"=>[],
-            "data"=> $token
+            "data"=> $token,
+            "user" => $user
         ],200);
     }
 

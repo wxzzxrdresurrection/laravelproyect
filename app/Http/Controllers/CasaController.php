@@ -8,9 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
+define('apikey','aio_IMtU88xJQHKUyq7Xm6mi8UPqPC3V');
+
 class CasaController extends Controller
 {
-
+    
     public function misCasas(Request $request){
 
         $user = User::find($request->user()->id);
@@ -21,7 +23,7 @@ class CasaController extends Controller
             "status" => 200,
             "message" => "Casas encontradas de manera exitosa",
             "errors" => [],
-            "data" => $casas
+            "casas" => [$casas]
         ]);
 
     }
@@ -82,10 +84,29 @@ class CasaController extends Controller
 
     public function aguaLectura(Request $request){
 
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "id" => "required|integer"
+            ],
+            [
+                "id.required" => "El campo :attribute es obligatorio",
+                "id.integer" => "El campo :attribute debe ser un número entero"
+            ]);
+        
+            if($validacion->fails()){
+                return response()->json([
+                    "status" => 400,
+                    "message" => "Ocurrió un error en las validaciones",
+                    "errors" => $validacion->errors(),
+                    "data" => []
+                ]);
+            }
+
         $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
-            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+            'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.agua/data/last');
 
         if($response->successful()){
@@ -93,7 +114,7 @@ class CasaController extends Controller
                 "status" => 200,
                 "message" => "Información de la casa encontrada de manera exitosa",
                 "errors" => [],
-                "data" => $response->json()
+                "valor" => $response->object()->value
             ],200);
         }       
 
@@ -107,10 +128,30 @@ class CasaController extends Controller
     }
 
     public function pesoLectura(Request $request){        
+
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "id" => "required|integer"
+            ],
+            [
+                "id.required" => "El campo :attribute es obligatorio",
+                "id.integer" => "El campo :attribute debe ser un número entero"
+            ]);
+        
+            if($validacion->fails()){
+                return response()->json([
+                    "status" => 400,
+                    "message" => "Ocurrió un error en las validaciones",
+                    "errors" => $validacion->errors(),
+                    "data" => []
+                ]);
+            }
+
         $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
-            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+            'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.peso/data/last');
 
         if($response->successful()){
@@ -118,7 +159,7 @@ class CasaController extends Controller
                 "status" => 200,
                 "message" => "Información de la casa encontrada de manera exitosa",
                 "errors" => [],
-                "data" => $response->json()
+                "valor" => $response->object()->value
             ],200);
         }       
 
@@ -132,10 +173,30 @@ class CasaController extends Controller
     }
 
     public function comidaLectura(Request $request){
+
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "id" => "required|integer"
+            ],
+            [
+                "id.required" => "El campo :attribute es obligatorio",
+                "id.integer" => "El campo :attribute debe ser un número entero"
+            ]);
+        
+            if($validacion->fails()){
+                return response()->json([
+                    "status" => 400,
+                    "message" => "Ocurrió un error en las validaciones",
+                    "errors" => $validacion->errors(),
+                    "data" => []
+                ]);
+            }
+
         $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
-            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+            'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.comida/data/last');
 
         if($response->successful()){
@@ -143,7 +204,7 @@ class CasaController extends Controller
                 "status" => 200,
                 "message" => "Información de la casa encontrada de manera exitosa",
                 "errors" => [],
-                "data" => $response->json()
+                "valor" => $response->object()->value
             ],200);
         }       
 
@@ -157,10 +218,30 @@ class CasaController extends Controller
     }
 
     public function lluviaLectura(Request $request){
+
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "id" => "required|integer"
+            ],
+            [
+                "id.required" => "El campo :attribute es obligatorio",
+                "id.integer" => "El campo :attribute debe ser un número entero"
+            ]);
+        
+            if($validacion->fails()){
+                return response()->json([
+                    "status" => 400,
+                    "message" => "Ocurrió un error en las validaciones",
+                    "errors" => $validacion->errors(),
+                    "data" => []
+                ]);
+            }
+
         $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
-            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+            'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.lluvia/data/last');
 
         if($response->successful()){
@@ -168,7 +249,7 @@ class CasaController extends Controller
                 "status" => 200,
                 "message" => "Información de la casa encontrada de manera exitosa",
                 "errors" => [],
-                "data" => $response->json()
+                 "valor" => $response->object()->value
             ],200);
         }       
 
@@ -182,11 +263,30 @@ class CasaController extends Controller
     }
 
     public function iluminacionLectura(Request $request){
+
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "id" => "required|integer"
+            ],
+            [
+                "id.required" => "El campo :attribute es obligatorio",
+                "id.integer" => "El campo :attribute debe ser un número entero"
+            ]);
+        
+            if($validacion->fails()){
+                return response()->json([
+                    "status" => 400,
+                    "message" => "Ocurrió un error en las validaciones",
+                    "errors" => $validacion->errors(),
+                    "data" => []
+                ]);
+            }
      
         $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
-            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+            'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.luminosidad/data/last');
 
         if($response->successful()){
@@ -194,7 +294,7 @@ class CasaController extends Controller
                 "status" => 200,
                 "message" => "Información de la casa encontrada de manera exitosa",
                 "errors" => [],
-                "data" => $response->json()
+                "valor" => $response->object()->value
             ],200);
         }       
 
@@ -209,10 +309,29 @@ class CasaController extends Controller
 
     public function temperaturaLectura(Request $request){
 
+        $validacion = Validator::make(
+            $request->all(),
+            [
+                "id" => "required|integer"
+            ],
+            [
+                "id.required" => "El campo :attribute es obligatorio",
+                "id.integer" => "El campo :attribute debe ser un número entero"
+            ]);
+        
+            if($validacion->fails()){
+                return response()->json([
+                    "status" => 400,
+                    "message" => "Ocurrió un error en las validaciones",
+                    "errors" => $validacion->errors(),
+                    "data" => []
+                ]);
+            }
+
         $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
-            'X-AIO-Key' => 'aio_wxOi45wuZyR3eETnx1l7y3hRihw8'])
+            'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.temperatura/data/last');
 
         if($response->successful()){
@@ -220,7 +339,7 @@ class CasaController extends Controller
                 "status" => 200,
                 "message" => "Información de la casa encontrada de manera exitosa",
                 "errors" => [],
-                "data" => $response->json()
+                "valor" => $response->object()->value
             ],200);
         }       
 
