@@ -82,7 +82,7 @@ class UserController extends Controller
                 "status" => 200,
                 "message" => "Usuario creado correctamente",
                 "errors" => null,
-                "data" => [$user]
+                "data" => $user->id
             ],200);
         }
 
