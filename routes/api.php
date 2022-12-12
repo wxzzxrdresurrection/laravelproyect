@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('/inicio')->group(function(){
     Route::post('/nuevo/usuario',[UserController::class,'registrarUsuario']);
     Route::get('/correo/{id}',[UserController::class,'verifymail'])->name('verifymail')->middleware('signed')->where('id', '[0-9]+');
-    Route::get('verificar/correo/{id}',[UserController::class,'verificarCorreoActivo'])->where('id', '[0-9]+');
+    Route::get('/verificar/correo/{id}',[UserController::class,'verificarCorreoActivo'])->where('id', '[0-9]+');
     Route::get('/enviar/sms/{id}',[UserController::class,'enviarSMS'])->where('id', '[0-9]+');
     Route::get('/enviar/sms/twilio/{id}',[UserController::class,'enviarCodigoTwilio'])->where('id', '[0-9]+');
     Route::post('/telefono/{id}',[UserController::class,'verificarSMS'])->name('verifyphone')->middleware('signed')->where('id', '[0-9]+');

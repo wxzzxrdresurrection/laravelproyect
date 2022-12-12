@@ -231,7 +231,7 @@ class UserController extends Controller
 
         $url = URL::temporarySignedRoute("verifyphone", now()->addMinutes(5), ["id" => $user->id]);
 
-        $response = Http::withBasicAuth('AC11f5b89a20d3ac2806893a2c85e1a71f', 'd6942782d0f9341a095298f70d7aedf0')
+        $response = Http::withBasicAuth('AC11f5b89a20d3ac2806893a2c85e1a71f', '111244c4c97e91a09935fa1687427da2')
         ->asForm()->post('https://api.twilio.com/2010-04-01/Accounts/AC11f5b89a20d3ac2806893a2c85e1a71f/Messages.json',[
             "To" => "whatsapp:+521".$user->telefono,
             "From" => "whatsapp:+14155238886",
@@ -304,7 +304,7 @@ class UserController extends Controller
             "message"=>"Se ha iniciado sesion correctamente",
             "errors"=>[],
             "data"=> $token,
-            "user" => $user
+            "user" => [$user]
         ],200);
     }
 
