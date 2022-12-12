@@ -24,6 +24,7 @@ class User extends Authenticatable
         'ap_materno',
         'telefono',
         'password',
+        'rol_id',
     ];
 
     /**
