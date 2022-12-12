@@ -163,7 +163,7 @@ class UserController extends Controller
             "status"=>200,
             "message"=>"SMS enviado.",
             "errors"=>null,
-            "data"=>null
+            "data"=> $url
         ],200);
     }
 

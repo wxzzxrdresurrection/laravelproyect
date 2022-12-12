@@ -352,7 +352,5 @@ class CasaController extends Controller
 
     }
 
-    public function pull(){
-        
-    }
+    
 }
