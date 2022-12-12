@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             "correo"=>"javier.res220704@gmail.com",
             "telefono"=>"8713814026",
             "password"=>"J22r07c04",
-            "rol_id"=>1
+            "role_id"=>'2'
         ]);
     }
 }
