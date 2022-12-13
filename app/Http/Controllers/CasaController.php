@@ -85,6 +85,20 @@ class CasaController extends Controller
     public function aguaLectura(Request $request,$id){
 
 
+        $validacion = Validator::make($request->all(),[
+            'id' => 'required'
+        ]);
+
+        if($validacion->fails()){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => $validacion->errors(),
+                "data" => []
+            ],400);
+        }
+
+        $casa = Casa::find($request->id);
         $casa = Casa::find($id);
 
         $response = Http::withHeaders([
@@ -111,7 +125,21 @@ class CasaController extends Controller
 
     public function pesoLectura(Request $request,$id){        
 
-        $casa = Casa::find($id);
+     
+        $validacion = Validator::make($request->all(),[
+            'id' => 'required'
+        ]);
+
+        if($validacion->fails()){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => $validacion->errors(),
+                "data" => []
+            ],400);
+        }
+
+        $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -137,7 +165,21 @@ class CasaController extends Controller
 
     public function comidaLectura(Request $request,$id){
 
-        $casa = Casa::find($id);
+     
+        $validacion = Validator::make($request->all(),[
+            'id' => 'required'
+        ]);
+
+        if($validacion->fails()){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => $validacion->errors(),
+                "data" => []
+            ],400);
+        }
+
+        $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -163,7 +205,21 @@ class CasaController extends Controller
 
     public function lluviaLectura(Request $request,$id){
 
-        $casa = Casa::find($id);
+      
+        $validacion = Validator::make($request->all(),[
+            'id' => 'required'
+        ]);
+
+        if($validacion->fails()){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => $validacion->errors(),
+                "data" => []
+            ],400);
+        }
+
+        $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -190,9 +246,20 @@ class CasaController extends Controller
     public function iluminacionLectura(Request $request,$id){
 
        
-     
-        $casa = Casa::find($id);
+        $validacion = Validator::make($request->all(),[
+            'id' => 'required'
+        ]);
 
+        if($validacion->fails()){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => $validacion->errors(),
+                "data" => []
+            ],400);
+        }
+
+        $casa = Casa::find($request->id);
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.luminosidad/data/last');
@@ -216,7 +283,19 @@ class CasaController extends Controller
     }
 
     public function temperaturaLectura(Request $request,$id){
+        
+        $validacion = Validator::make($request->all(),[
+            'id' => 'required'
+        ]);
 
+        if($validacion->fails()){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => $validacion->errors(),
+                "data" => []
+            ],400);
+        }
 
         $casa = Casa::find($request->id);
 
