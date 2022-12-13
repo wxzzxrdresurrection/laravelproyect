@@ -82,28 +82,10 @@ class CasaController extends Controller
         ],200);
     }
 
-    public function aguaLectura(Request $request){
+    public function aguaLectura(Request $request,$id){
 
-        $validacion = Validator::make(
-            $request->all(),
-            [
-                "id" => "required|integer"
-            ],
-            [
-                "id.required" => "El campo :attribute es obligatorio",
-                "id.integer" => "El campo :attribute debe ser un número entero"
-            ]);
-        
-            if($validacion->fails()){
-                return response()->json([
-                    "status" => 400,
-                    "message" => "Ocurrió un error en las validaciones",
-                    "errors" => $validacion->errors(),
-                    "data" => []
-                ]);
-            }
 
-        $casa = Casa::find($request->id);
+        $casa = Casa::find($id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -127,28 +109,9 @@ class CasaController extends Controller
 
     }
 
-    public function pesoLectura(Request $request){        
+    public function pesoLectura(Request $request,$id){        
 
-        $validacion = Validator::make(
-            $request->all(),
-            [
-                "id" => "required|integer"
-            ],
-            [
-                "id.required" => "El campo :attribute es obligatorio",
-                "id.integer" => "El campo :attribute debe ser un número entero"
-            ]);
-        
-            if($validacion->fails()){
-                return response()->json([
-                    "status" => 400,
-                    "message" => "Ocurrió un error en las validaciones",
-                    "errors" => $validacion->errors(),
-                    "data" => []
-                ]);
-            }
-
-        $casa = Casa::find($request->id);
+        $casa = Casa::find($id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -172,28 +135,9 @@ class CasaController extends Controller
 
     }
 
-    public function comidaLectura(Request $request){
+    public function comidaLectura(Request $request,$id){
 
-        $validacion = Validator::make(
-            $request->all(),
-            [
-                "id" => "required|integer"
-            ],
-            [
-                "id.required" => "El campo :attribute es obligatorio",
-                "id.integer" => "El campo :attribute debe ser un número entero"
-            ]);
-        
-            if($validacion->fails()){
-                return response()->json([
-                    "status" => 400,
-                    "message" => "Ocurrió un error en las validaciones",
-                    "errors" => $validacion->errors(),
-                    "data" => []
-                ]);
-            }
-
-        $casa = Casa::find($request->id);
+        $casa = Casa::find($id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -217,28 +161,9 @@ class CasaController extends Controller
 
     }
 
-    public function lluviaLectura(Request $request){
+    public function lluviaLectura(Request $request,$id){
 
-        $validacion = Validator::make(
-            $request->all(),
-            [
-                "id" => "required|integer"
-            ],
-            [
-                "id.required" => "El campo :attribute es obligatorio",
-                "id.integer" => "El campo :attribute debe ser un número entero"
-            ]);
-        
-            if($validacion->fails()){
-                return response()->json([
-                    "status" => 400,
-                    "message" => "Ocurrió un error en las validaciones",
-                    "errors" => $validacion->errors(),
-                    "data" => []
-                ]);
-            }
-
-        $casa = Casa::find($request->id);
+        $casa = Casa::find($id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -262,28 +187,11 @@ class CasaController extends Controller
 
     }
 
-    public function iluminacionLectura(Request $request){
+    public function iluminacionLectura(Request $request,$id){
 
-        $validacion = Validator::make(
-            $request->all(),
-            [
-                "id" => "required|integer"
-            ],
-            [
-                "id.required" => "El campo :attribute es obligatorio",
-                "id.integer" => "El campo :attribute debe ser un número entero"
-            ]);
-        
-            if($validacion->fails()){
-                return response()->json([
-                    "status" => 400,
-                    "message" => "Ocurrió un error en las validaciones",
-                    "errors" => $validacion->errors(),
-                    "data" => []
-                ]);
-            }
+       
      
-        $casa = Casa::find($request->id);
+        $casa = Casa::find($id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -307,28 +215,10 @@ class CasaController extends Controller
 
     }
 
-    public function temperaturaLectura(Request $request){
+    public function temperaturaLectura(Request $request,$id){
 
-        $validacion = Validator::make(
-            $request->all(),
-            [
-                "id" => "required|integer"
-            ],
-            [
-                "id.required" => "El campo :attribute es obligatorio",
-                "id.integer" => "El campo :attribute debe ser un número entero"
-            ]);
-        
-            if($validacion->fails()){
-                return response()->json([
-                    "status" => 400,
-                    "message" => "Ocurrió un error en las validaciones",
-                    "errors" => $validacion->errors(),
-                    "data" => []
-                ]);
-            }
 
-        $casa = Casa::find($request->id);
+        $casa = Casa::find($id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
