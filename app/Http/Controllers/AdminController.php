@@ -182,7 +182,7 @@ class AdminController extends Controller
                 "status" => 200,
                 "message" => "Usuarios encontrados con exito",
                 "errors" => null,
-                "users" => $user
+                "users" => [$user]
             ],200);
         
     }
