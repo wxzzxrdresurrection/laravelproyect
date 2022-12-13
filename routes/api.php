@@ -53,7 +53,7 @@ Route::prefix('/user')->middleware(['auth:sanctum','active','roles:2'])->group( 
         Route::get('/comida',[CasaController::class,'comidaLectura']);
         Route::get('/agua',[CasaController::class,'aguaLectura']);
         Route::get('/peso',[CasaController::class,'pesoLectura']);
-        Route::get('/lluvia',[CasaController::class,'lluviaLectura']);
+        Route::post('/lluvia',[CasaController::class,'lluviaLectura']);
         Route::get('/temperatura',[CasaController::class,'temperaturaLectura']);
         Route::get('/iluminacion',[CasaController::class,'iluminacionLectura']);
     });
