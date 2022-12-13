@@ -23,7 +23,7 @@ class CasaController extends Controller
             "status" => 200,
             "message" => "Casas encontradas de manera exitosa",
             "errors" => [],
-            "casas" => [$casas]
+            "casas" => $casas
         ]);
 
     }
