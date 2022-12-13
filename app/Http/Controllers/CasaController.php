@@ -82,7 +82,7 @@ class CasaController extends Controller
         ],200);
     }
 
-    public function aguaLectura(Request $request,$id){
+    public function aguaLectura(Request $request){
 
 
         $validacion = Validator::make($request->all(),[
@@ -99,7 +99,15 @@ class CasaController extends Controller
         }
 
         $casa = Casa::find($request->id);
-        $casa = Casa::find($id);
+      
+        if(!$casa){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => ["La casa no existe"],
+                "data" => []
+            ],400);
+        }
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -123,7 +131,7 @@ class CasaController extends Controller
 
     }
 
-    public function pesoLectura(Request $request,$id){        
+    public function pesoLectura(Request $request){        
 
      
         $validacion = Validator::make($request->all(),[
@@ -140,6 +148,15 @@ class CasaController extends Controller
         }
 
         $casa = Casa::find($request->id);
+
+        if(!$casa){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => ["La casa no existe"],
+                "data" => []
+            ],400);
+        }
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -163,7 +180,7 @@ class CasaController extends Controller
 
     }
 
-    public function comidaLectura(Request $request,$id){
+    public function comidaLectura(Request $request){
 
      
         $validacion = Validator::make($request->all(),[
@@ -180,6 +197,16 @@ class CasaController extends Controller
         }
 
         $casa = Casa::find($request->id);
+
+
+        if(!$casa){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => ["La casa no existe"],
+                "data" => []
+            ],400);
+        }
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -203,7 +230,7 @@ class CasaController extends Controller
 
     }
 
-    public function lluviaLectura(Request $request,$id){
+    public function lluviaLectura(Request $request){
 
       
         $validacion = Validator::make($request->all(),[
@@ -220,6 +247,15 @@ class CasaController extends Controller
         }
 
         $casa = Casa::find($request->id);
+
+        if(!$casa){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => ["La casa no existe"],
+                "data" => []
+            ],400);
+        }
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
@@ -243,7 +279,7 @@ class CasaController extends Controller
 
     }
 
-    public function iluminacionLectura(Request $request,$id){
+    public function iluminacionLectura(Request $request){
 
        
         $validacion = Validator::make($request->all(),[
@@ -260,6 +296,15 @@ class CasaController extends Controller
         }
 
         $casa = Casa::find($request->id);
+
+        if(!$casa){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => ["La casa no existe"],
+                "data" => []
+            ],400);
+        }
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
         ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.luminosidad/data/last');
@@ -282,7 +327,7 @@ class CasaController extends Controller
 
     }
 
-    public function temperaturaLectura(Request $request,$id){
+    public function temperaturaLectura(Request $request){
         
         $validacion = Validator::make($request->all(),[
             'id' => 'required'
@@ -298,6 +343,15 @@ class CasaController extends Controller
         }
 
         $casa = Casa::find($request->id);
+
+        if(!$casa){
+            return response()->json([
+                "status" => 400,
+                "message" => "Ocurrió un error al obtener la información de la casa",
+                "errors" => ["La casa no existe"],
+                "data" => []
+            ],400);
+        }
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
