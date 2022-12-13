@@ -210,7 +210,7 @@ class CasaController extends Controller
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])
-        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.comida/data/last');
+        ->get('https://io.adafruit.com/api/v2/isradios/feeds/'.$casa->nombre.'.infrarojo/data/last');
 
         if($response->successful()){
             return response()->json([
