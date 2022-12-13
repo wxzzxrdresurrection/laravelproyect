@@ -46,7 +46,7 @@ class AdminController extends Controller
         ]);
 
         $response = Http::withHeaders([
-            "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+            "X-AIO-Key" => apikey
         ])
         ->post("https://io.adafruit.com/api/v2/isradios/groups",[
             "name" => $request->nombre
@@ -58,7 +58,7 @@ class AdminController extends Controller
             for ($i=0; $i <= 5; $i++) { 
                 
             $response2 = Http::withHeaders([
-                "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+                "X-AIO-Key" => apikey
             ])
             ->post("https://io.adafruit.com/api/v2/isradios/groups/$casa->nombre/feeds",[
                 "name" => $feeds[$i]
@@ -68,7 +68,7 @@ class AdminController extends Controller
             if($response2->successful()){
 
                 $response3 = Http::withHeaders([
-                    "X-AIO-Key" => "aio_wxOi45wuZyR3eETnx1l7y3hRihw8"
+                    "X-AIO-Key" => apikey
                 ])
                 ->get("https://io.adafruit.com/api/v2/isradios/groups/$request->nombre");
 
@@ -402,5 +402,5 @@ class AdminController extends Controller
             
     }
 
-
+  
 }
