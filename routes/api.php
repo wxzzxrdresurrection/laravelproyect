@@ -50,12 +50,12 @@ Route::prefix('/user')->middleware(['auth:sanctum','active','roles:2'])->group( 
     Route::get('/casas',[CasaController::class,'misCasas']);
     //Route::get('/sensores',[CasaController::class,'infoCasa']);
     Route::prefix('/sensor')->group(function(){
-        Route::get('/comida',[CasaController::class,'comidaLectura']);
-        Route::get('/agua',[CasaController::class,'aguaLectura']);
-        Route::get('/peso',[CasaController::class,'pesoLectura']);
+        Route::post('/comida',[CasaController::class,'comidaLectura']);
+        Route::post('/agua',[CasaController::class,'aguaLectura']);
+        Route::post('/peso',[CasaController::class,'pesoLectura']);
         Route::post('/lluvia',[CasaController::class,'lluviaLectura']);
-        Route::get('/temperatura',[CasaController::class,'temperaturaLectura']);
-        Route::get('/iluminacion',[CasaController::class,'iluminacionLectura']);
+        Route::post('/temperatura',[CasaController::class,'temperaturaLectura']);
+        Route::post('/iluminacion',[CasaController::class,'iluminacionLectura']);
     });
 
 });
