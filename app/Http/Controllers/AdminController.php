@@ -168,7 +168,7 @@ class AdminController extends Controller
     }
 
     public function verUsuarios(){
-        $user = User::all()->where('id','=','2');
+        $user = User::all()->where('role_id','=','2');
 
         if(!$user){
             return response()->json([
@@ -182,7 +182,7 @@ class AdminController extends Controller
                 "status" => 200,
                 "message" => "Usuarios encontrados con exito",
                 "errors" => null,
-                "data" => [$user]
+                "data" => $user
             ],200);
 
         }
@@ -205,7 +205,7 @@ class AdminController extends Controller
             "status" => 200,
             "message" => "Casas encontradas de manera exitosa",
             "errors" => null,
-            "casas" => [$casa]
+            "casas" => $casa
         ],200);
     }
 
