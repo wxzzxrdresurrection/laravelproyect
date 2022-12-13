@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 
-define('apikey','aio_rMer20DjiCRRrxsv3xAmeMs03rXV');
+define('apikey','aio_Fsur53i4STM5DHrto0vY6Tsb6D0S');
 
 class CasaController extends Controller
 {
