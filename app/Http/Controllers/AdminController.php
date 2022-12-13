@@ -168,7 +168,7 @@ class AdminController extends Controller
     }
 
     public function verUsuarios(){
-        $user = User::all();
+        $user = User::all()->where("role_id","=","2");
 
         if(!$user){
             return response()->json([
@@ -177,15 +177,14 @@ class AdminController extends Controller
                 "errors" => "No se encontraron usuarios",
                 "data" => null
             ],400);
-
+        }
             return response()->json([
                 "status" => 200,
                 "message" => "Usuarios encontrados con exito",
                 "errors" => null,
                 "users" => $user
             ],200);
-
-        }
+        
     }
 
     public function verCasas(){
