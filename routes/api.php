@@ -61,7 +61,7 @@ Route::prefix('/user')->middleware(['auth:sanctum','active','roles:2'])->group( 
 });
 
 Route::prefix('/admin')->middleware(['active','auth:sanctum','roles:1'])->group(function(){
-    Route::get('/usuarios',[AdminController::class,'verUsuarios']);
+    Route::get('/users',[AdminController::class,'verUsuarios']);
     Route::get('/casas',[AdminController::class,'verCasas']);
     Route::get('/relacion',[AdminController::class,'casasUsuario']);
 
