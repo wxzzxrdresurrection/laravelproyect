@@ -304,7 +304,7 @@ class UserController extends Controller
             "message"=>"Se ha iniciado sesion correctamente",
             "errors"=>[],
             "data"=> $token,
-            "user" => [$user]
+            "role" =>  $user->role_id
         ],200);
     }
 
