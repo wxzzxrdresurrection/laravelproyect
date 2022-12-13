@@ -46,7 +46,7 @@ Route::prefix('/casa')->middleware(['auth:sanctum','active','roles:1'])->group(f
     Route::get('/usuario/{id}',[AdminController::class,'casasDeCadaUsuario'])->where('id', '[0-9]+');
 });
 
-Route::prefix('/user')->middleware(['auth:sanctum','active','roles:1'])->group( function(){
+Route::prefix('/user')->middleware(['auth:sanctum','active','roles:2'])->group( function(){
     Route::get('/casas',[CasaController::class,'misCasas']);
     //Route::get('/sensores',[CasaController::class,'infoCasa']);
     Route::prefix('/sensor')->group(function(){
