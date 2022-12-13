@@ -218,7 +218,7 @@ class CasaController extends Controller
     public function temperaturaLectura(Request $request,$id){
 
 
-        $casa = Casa::find($id);
+        $casa = Casa::find($request->id);
 
         $response = Http::withHeaders([
             'X-AIO-Key' => apikey])

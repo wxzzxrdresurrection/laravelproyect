@@ -23,7 +23,7 @@ class UserSeeder extends Seeder
             "correo"=>"javier.res220704@gmail.com",
             "telefono"=>"8713814026",
             "password"=>Hash::make("J22r07c04"),
-            "role_id"=>'2'
+            "role_id"=>'1'
         ]);
     }
 }
